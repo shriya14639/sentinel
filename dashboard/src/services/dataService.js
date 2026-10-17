@@ -104,6 +104,7 @@ export const DEMO_INCIDENTS = [
 export async function fetchIncidents(apiBaseUrl = "") {
   if (apiBaseUrl) {
     try {
+<<<<<<< HEAD
       const response = await fetch(`${apiBaseUrl}/incidents`, {
         headers: { "Content-Type": "application/json" }
       });
@@ -155,17 +156,28 @@ summary: (() => {
 
       return {
         data: mappedIncidents,
+=======
+      const response = await fetch(`${apiBaseUrl}/api/incidents`, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+      }
+      const data = await response.json();
+      return {
+        data: Array.isArray(data) ? data : data.incidents || [],
+>>>>>>> origin/main
         isDemo: false,
         error: null
       };
     } catch (err) {
-      console.warn("Backend unavailable:", err.message);
-
+      console.warn("Backend unavailable, falling back to verified demo data:", err.message);
       return {
         data: DEMO_INCIDENTS,
         isDemo: true,
-        error: `Could not reach backend (${err.message}). Displaying local demo events.`
+        error: `Could not reach backend (${err.message}). Displaying local datathon demo events.`
       };
+      
     }
   }
 
@@ -174,7 +186,11 @@ summary: (() => {
     isDemo: true,
     error: null
   };
+<<<<<<< HEAD
 }
 
 
   
+=======
+}
+>>>>>>> origin/main

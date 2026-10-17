@@ -1,51 +1,119 @@
 
-"""Orchestrate anomaly scoring and severity classification."""
+
+"""Orchestrate anomaly detection and severity classification."""
 
 import json
+from pathlib import Path
+from collections import defaultdict, deque
 
-from anomaly_detection.score import score_event
 from pipeline.severity import classify_event
+from src.anomaly_detection import RobustAnomalyDetector
 
 
-def process_event(event: dict) -> dict:
-    """Score an event and add its severity and deviated metrics."""
-
-    scored_event = score_event(event)
-    return classify_event(scored_event)
+MEMORY_HISTORY_SIZE = 4
+MEMORY_TREND_INCREASE = 10.0
 
 
-def process_events(events: list[dict]) -> list[dict]:
-    """Process multiple events through the pipeline."""
+def create_detector(training_events):
+    """Fit the detector using normal training events."""
+    detector = RobustAnomalyDetector()
+    detector.fit(training_events)
+    return detector
 
-    return [process_event(event) for event in events]
+
+class MemoryTrendTracker:
+    """Detect steadily increasing memory usage per system."""
+
+    def __init__(self):
+        self.history = defaultdict(
+            lambda: deque(maxlen=MEMORY_HISTORY_SIZE)
+        )
+
+    def check(self, event):
+        system_id = event.get("system_id", "unknown")
+        metrics = event.get("metrics", {})
+        memory = metrics.get("memory_pct")
+
+        if not isinstance(memory, (int, float)) or isinstance(memory, bool):
+            return False
+
+        readings = self.history[system_id]
+        readings.append(float(memory))
+
+        if len(readings) < MEMORY_HISTORY_SIZE:
+            return False
+
+        steadily_increasing = all(
+            readings[i] > readings[i - 1]
+            for i in range(1, len(readings))
+        )
+        large_increase = (
+            readings[-1] - readings[0] >= MEMORY_TREND_INCREASE
+        )
+
+        return steadily_increasing and large_increase
 
 
-def process_stream(events):
-    """Process events one at a time from an iterable."""
+def process_event(event, detector, trend_tracker=None):
+    """Detect anomalies, memory trends, and classify severity."""
+    prediction = detector.predict_one(event)
 
+    result = event.copy()
+    result.update(prediction)
+    result["metrics"] = event.get("metrics", {})
+
+    trend_detected = (
+        trend_tracker.check(event)
+        if trend_tracker is not None
+        else False
+    )
+    result["memory_trend_detected"] = trend_detected
+
+    if trend_detected:
+        result["is_anomaly"] = True
+        result["anomaly_score"] = max(
+            result.get("anomaly_score", 0),
+            6.0,
+        )
+
+        flagged = list(result.get("flagged_metrics", []))
+        if "memory_pct" not in flagged:
+            flagged.append("memory_pct")
+        result["flagged_metrics"] = flagged
+
+        scores = dict(result.get("metric_scores", {}))
+        scores["memory_pct"] = max(scores.get("memory_pct", 0), 6.0)
+        result["metric_scores"] = scores
+
+    return classify_event(result)
+
+
+def process_events(events, detector):
+    """Process a collection of events with memory-trend tracking."""
+    tracker = MemoryTrendTracker()
+    return [
+        process_event(event, detector, tracker)
+        for event in events
+    ]
+
+
+def process_stream(events, detector):
+    """Process events one at a time with memory-trend tracking."""
+    tracker = MemoryTrendTracker()
     for event in events:
-        yield process_event(event)
+        yield process_event(event, detector, tracker)
 
 
-def replay_jsonl_stream(file_path: str):
-    """Read and process events from a JSONL file one at a time."""
-
-    with open(file_path, "r", encoding="utf-8") as file:
+def replay_jsonl_stream(file_path, detector):
+    """Read and process events from a JSONL file."""
+    tracker = MemoryTrendTracker()
+    with Path(file_path).open("r", encoding="utf-8") as file:
         for line in file:
             if line.strip():
                 event = json.loads(line)
-                yield process_event(event)
+                yield process_event(event, detector, tracker)
 
 
-def process_replay(replay_events):
-    """Process and print events received from a replay stream."""
-
-    for result in process_stream(replay_events):
-        print(
-            f"{result.get('system_id', 'unknown')} | "
-            f"Severity: {result['severity']} | "
-            f"Anomaly: {result['is_anomaly']} | "
-            f"Score: {result['anomaly_score']}"
-        )
-        yield result
-
+def process_replay(replay_events, detector):
+    """Process and return events received from a replay stream."""
+    return list(process_stream(replay_events, detector))

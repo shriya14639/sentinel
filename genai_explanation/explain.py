@@ -1,66 +1,65 @@
-"""Part 4: GenAI incident explanation for Sentinel (advisory only).
+"""Part 4: incident explanation for Sentinel (advisory only).
 
     from genai_explanation.explain import explain_incident
-    result = explain_incident(score_event(event))
+    explanation = explain_incident(processed_event)
 
-Input : an event dict, normally the output of anomaly_detection.score.score_event
-        (it must contain event["metrics"], a dict of numbers).
-Output: a dict that always has the same keys (see _build_result).
+INPUT : the dict returned by pipeline.orchestrator.process_event (Parts 2 + 3).
+        Required: "metrics" (dict of numbers). Everything else is optional.
+OUTPUT: always a dict with the same keys (see _result). Check result["status"]:
+          "ok"       a real LLM wrote the summary and recommendations
+          "fallback" a template wrote them (no LLM configured, or the LLM failed)
+          "error"    the input event could not be used (see result["error"])
+        result["source"] says who wrote the text: "llm", "fallback" or "none".
 
-This module only EXPLAINS an event the ML detector already flagged. It never executes
-any recommended action and never sends ground-truth labels to the LLM.
+Rules this module follows:
+  * It never changes the severity chosen by Part 3. It only copies it.
+  * "evidence" is built by this code from the event. An LLM never writes it.
+  * Ground-truth labels (injected_anomaly, anomaly_type) are never used or sent.
+  * Event text is treated as untrusted data. It is cleaned and shortened.
+  * Recommended actions are advice for humans. Nothing is ever executed.
 """
 import json
 import math
-import os
 import re
-import socket
-import urllib.error
-import urllib.request
 
-try:                                   # optional: read settings from a .env file
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
-
-from .prompts import (ALLOWED_INCIDENT_TYPES, FALLBACK_ACTIONS, SYSTEM_PROMPT,
-                      TYPE_DESCRIPTIONS, build_user_prompt)
+from . import providers
+from .prompts import (ALLOWED_INCIDENT_TYPES, FALLBACK_ACTIONS, FALLBACK_LABEL,
+                      SYSTEM_PROMPT, TYPE_DESCRIPTIONS, build_user_prompt)
+from .providers import LLMError
 
 ALLOWED_SEVERITIES = ("LOW", "MEDIUM", "HIGH", "CRITICAL")
 METRIC_NAME_PATTERN = re.compile(r"^[a-z][a-z0-9_]{0,39}$")
-DEVIATION_LIMIT = 1.0          # same meaning as THRESHOLD in score.py: 1.0 = edge of normal
-MAX_ID_LEN = 64
-MAX_DESCRIPTION_LEN = 300
+IPV4_PATTERN = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}\b")
+MAX_TEXT_LEN = 64
 MAX_SUMMARY_LEN = 600
 MAX_ACTION_LEN = 400
-DEFAULT_TIMEOUT = 20.0
 # Crude guard against over-confident wording in LLM text.
 OVERCONFIDENT_WORDS = ("definitely", "certainly", "undoubtedly", "without doubt")
 
 
 class InvalidEventError(ValueError):
-    """The event cannot be explained (wrong type, no usable metrics)."""
+    """The event cannot be explained (wrong type or no usable metrics)."""
 
 
-class LLMError(Exception):
-    """The LLM call failed or its answer was unusable. Safe to show to users."""
-
-
-# ---------------------------------------------------------------- input checking
+# ------------------------------------------------------------ input checking
 def _is_number(value):
     return (isinstance(value, (int, float)) and not isinstance(value, bool)
             and math.isfinite(value))
 
 
-def _clean_text(value, max_len):
-    """Keep printable characters only and cut to max_len (limits injection and size)."""
+def _clean_text(value):
+    """Keep printable characters only and cut to MAX_TEXT_LEN (limits injection and size)."""
     text = "".join(ch for ch in str(value) if ch.isprintable())
-    return text.strip()[:max_len]
+    return text.strip()[:MAX_TEXT_LEN]
+
+
+def _optional_text(event, key):
+    value = event.get(key)
+    return (_clean_text(value) or None) if value is not None else None
 
 
 def validate_event(event):
-    """Return (clean_event, warnings). Raise InvalidEventError if unusable."""
+    """Return (clean_event, warnings). Raise InvalidEventError if the event is unusable."""
     warnings = []
     if not isinstance(event, dict):
         raise InvalidEventError("event must be a dict")
@@ -88,6 +87,23 @@ def validate_event(event):
     elif raw_scores is not None:
         warnings.append("Ignored metric_scores: it is not a dict.")
 
+    # Part 3 writes "deviated_metrics" (a copy of Part 2's "flagged_metrics").
+    raw_deviated = event.get("deviated_metrics")
+    if raw_deviated is None:
+        raw_deviated = event.get("flagged_metrics")
+    has_deviation_info = isinstance(raw_deviated, (list, tuple))
+    deviated = []
+    if has_deviation_info:
+        for name in raw_deviated:
+            if isinstance(name, str) and name in metrics:
+                if name not in deviated:
+                    deviated.append(name)
+            else:
+                warnings.append("Ignored a deviated-metric name that is not a metric in this event.")
+        deviated.sort(key=lambda n: metric_scores.get(n, 0.0), reverse=True)
+    elif raw_deviated is not None:
+        warnings.append("Ignored deviated_metrics: it is not a list.")
+
     anomaly_score = None
     if event.get("anomaly_score") is not None:
         if _is_number(event["anomaly_score"]):
@@ -100,73 +116,84 @@ def validate_event(event):
         warnings.append("Ignored is_anomaly: not a boolean.")
         is_anomaly = None
 
+    # Severity belongs to Part 3. We only copy it (accepting any letter case).
     severity = "UNKNOWN"
     if event.get("severity") is not None:
         candidate = str(event["severity"]).strip().upper()
         if candidate in ALLOWED_SEVERITIES:
             severity = candidate
         else:
-            warnings.append("Ignored severity: not one of LOW/MEDIUM/HIGH/CRITICAL.")
-
-    def optional_text(key, max_len):
-        value = event.get(key)
-        return (_clean_text(value, max_len) or None) if value is not None else None
+            warnings.append("Ignored severity: not LOW, MEDIUM, HIGH or CRITICAL.")
 
     clean = {
-        "system_id": optional_text("system_id", MAX_ID_LEN),
-        "event_id": optional_text("event_id", MAX_ID_LEN),
-        "timestamp": optional_text("timestamp", MAX_ID_LEN),
-        "description": optional_text("description", MAX_DESCRIPTION_LEN),
+        "event_id": _optional_text(event, "event_id"),
+        "system_id": _optional_text(event, "system_id"),
+        "timestamp": _optional_text(event, "timestamp"),
         "severity": severity,
-        "anomaly_score": anomaly_score,
         "is_anomaly": is_anomaly,
+        "anomaly_score": anomaly_score,
+        "deviated_metrics": deviated,
+        "has_deviation_info": has_deviation_info,
+        "correlation_detected": event.get("correlation_detected") is True,
+        "memory_trend_detected": event.get("memory_trend_detected") is True,
         "metrics": metrics,
         "metric_scores": metric_scores,
     }
     return clean, warnings
 
 
-# ------------------------------------------------- evidence and rule-based fallback
-def find_deviated_metrics(clean):
-    """Metrics whose deviation ratio is at/above 1.0, biggest first: [(name, ratio)]."""
-    pairs = [(n, s) for n, s in clean["metric_scores"].items() if s >= DEVIATION_LIMIT]
-    return sorted(pairs, key=lambda p: p[1], reverse=True)
-
-
-def build_evidence(clean, deviated):
-    """Evidence lines built by CODE from the supplied data only (the LLM never writes these)."""
+# ------------------------------------------------ evidence and classification
+def build_evidence(clean):
+    """Evidence lines built by CODE from the supplied event only."""
     lines = [f"System: {clean['system_id']}" if clean["system_id"] else "System: not specified"]
     lines.append(f"Timestamp: {clean['timestamp']}" if clean["timestamp"]
                  else "Timestamp: not specified")
-    lines.append(f"Severity (from the previous module): {clean['severity']}"
+    lines.append(f"Severity assigned by the pipeline: {clean['severity']}"
                  if clean["severity"] != "UNKNOWN" else "Severity: not specified")
+    if clean["is_anomaly"] is True:
+        lines.append("The detector flagged this event as anomalous.")
+    elif clean["is_anomaly"] is False:
+        lines.append("The detector did not flag this event as anomalous.")
+    else:
+        lines.append("Detector anomaly flag: not specified")
     if clean["anomaly_score"] is not None:
-        lines.append(f"Anomaly score: {clean['anomaly_score']:.2f} (1.0 = edge of normal range)")
+        lines.append(f"Detector anomaly score: {clean['anomaly_score']:.2f} (higher = more unusual)")
     else:
-        lines.append("Anomaly score: not specified")
-    if clean["metric_scores"]:
-        if deviated:
-            for name, score in deviated[:6]:
-                lines.append(f"{name} = {clean['metrics'][name]:g}, "
-                             f"deviation {score:.2f}x its normal limit")
+        lines.append("Detector anomaly score: not specified")
+
+    if not clean["has_deviation_info"]:
+        lines.append("Deviated metrics: not specified")
+    elif not clean["deviated_metrics"]:
+        lines.append("No individual metric was reported as deviated.")
+    for name in clean["deviated_metrics"]:
+        value = f"{name} = {clean['metrics'][name]:g}"
+        if name == "memory_pct" and clean["memory_trend_detected"]:
+            # The pipeline may raise this score to a fixed minimum when a trend is found,
+            # so we do not present it as a measured score.
+            lines.append(value + " (deviated; part of a sustained increase)")
+        elif name in clean["metric_scores"]:
+            lines.append(f"{value} (detector score {clean['metric_scores'][name]:.2f})")
         else:
-            lines.append("No metric is outside its normal range.")
-    else:
-        lines.append("Per-metric deviation scores: not specified")
-    if clean["description"]:
-        lines.append(f"Description supplied with the event: {clean['description']}")
+            lines.append(value + " (deviated)")
+    if clean["correlation_detected"]:
+        lines.append("Several metrics deviated together (correlation reported by the pipeline).")
+    if clean["memory_trend_detected"]:
+        lines.append("A sustained memory increase over recent readings was detected.")
     return lines
 
 
-def classify_incident(clean, deviated):
-    """Simple cautious rules used only by the fallback."""
-    if not clean["metric_scores"]:
+def classify_incident(clean):
+    """Cautious rule-based incident type, used by the fallback."""
+    names = set(clean["deviated_metrics"])
+    trend = clean["memory_trend_detected"]
+    if not names and not trend:
+        if clean["has_deviation_info"] and not clean["is_anomaly"]:
+            return "no_clear_anomaly"
         return "unknown_anomaly"
-    names = {n for n, _ in deviated}
-    if not names:
-        return "no_clear_anomaly"
     if "failed_logins" in names:
         return "possible_brute_force_activity"
+    if trend or names == {"memory_pct"}:
+        return "possible_memory_leak"
     if "cpu_pct" in names and "network_in_mbps" in names:
         return "unusual_resource_and_network_activity"
     if names & {"network_in_mbps", "network_out_mbps"}:
@@ -178,79 +205,47 @@ def classify_incident(clean, deviated):
     return "unknown_anomaly"
 
 
-def _fallback_summary(clean, incident_type, deviated):
-    system = clean["system_id"] or "an unnamed system"
-    note = "This is an automatic template explanation, not an LLM analysis."
-    if incident_type == "unknown_anomaly" and not clean["metric_scores"]:
-        return (f"An event was reported for {system}, but per-metric deviation scores were "
-                f"not provided, so the cause cannot be identified. {note}")
-    if incident_type == "no_clear_anomaly":
-        return f"No metric for {system} is outside its normal range in the data supplied. {note}"
-    names = ", ".join(n for n, _ in deviated[:3])
-    return (f"{system}: metrics outside their normal range ({names}). This is consistent with "
-            f"{TYPE_DESCRIPTIONS[incident_type]}, but the data alone cannot confirm the cause. {note}")
-
-
-# ------------------------------------------------------------------ LLM access
-def _load_config():
-    """Read settings from environment variables. Returns (config_or_None, warning_or_None)."""
-    key = os.environ.get("SENTINEL_LLM_API_KEY", "").strip()
-    if not key:
-        return None, "SENTINEL_LLM_API_KEY is not set; using the rule-based fallback."
-    base_url = os.environ.get("SENTINEL_LLM_BASE_URL", "").strip()
-    model = os.environ.get("SENTINEL_LLM_MODEL", "").strip()
-    missing = [n for n, v in (("SENTINEL_LLM_BASE_URL", base_url),
-                              ("SENTINEL_LLM_MODEL", model)) if not v]
-    if missing:
-        return None, "Missing environment variable(s): " + ", ".join(missing) + "; using fallback."
-    local = base_url.startswith(("http://localhost", "http://127.0.0.1"))
-    if not (base_url.startswith("https://") or local):
-        return None, "SENTINEL_LLM_BASE_URL must start with https://; using fallback."
-    try:
-        timeout = float(os.environ.get("SENTINEL_LLM_TIMEOUT", DEFAULT_TIMEOUT))
-        if timeout <= 0:
-            raise ValueError
-    except ValueError:
-        timeout = DEFAULT_TIMEOUT
-    return {"api_key": key, "base_url": base_url, "model": model, "timeout": timeout}, None
-
-
-def _call_llm(config, system_prompt, user_prompt):
-    """Send one chat request to an OpenAI-compatible API. Returns the reply text.
-
-    Raises LLMError (with a safe message, never containing the API key) on any failure.
-    """
-    body = {
-        "model": config["model"],
-        "temperature": 0.2,
-        "messages": [{"role": "system", "content": system_prompt},
-                     {"role": "user", "content": user_prompt}],
+def _supported_by_evidence(incident_type, clean):
+    """True if the event data backs this incident type (used to check LLM answers)."""
+    names = set(clean["deviated_metrics"])
+    trend = clean["memory_trend_detected"]
+    checks = {
+        "possible_brute_force_activity": "failed_logins" in names,
+        "unusual_resource_and_network_activity": {"cpu_pct", "network_in_mbps"} <= names,
+        "possible_memory_leak": trend or "memory_pct" in names,
+        "unusual_network_activity": bool(names & {"network_in_mbps", "network_out_mbps"}),
+        "unusual_resource_usage": bool(names & {"cpu_pct", "memory_pct"}),
+        "possible_service_degradation": "error_rate" in names,
+        "no_clear_anomaly": not names and not trend,
+        "unknown_anomaly": True,
     }
-    request = urllib.request.Request(
-        config["base_url"].rstrip("/") + "/chat/completions",
-        data=json.dumps(body).encode("utf-8"),
-        headers={"Content-Type": "application/json",
-                 "Authorization": "Bearer " + config["api_key"]},
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=config["timeout"]) as response:
-            raw = response.read().decode("utf-8")
-    except urllib.error.HTTPError as err:        # must come before URLError
-        raise LLMError(f"The LLM API returned HTTP {err.code}.") from None
-    except (urllib.error.URLError, socket.timeout, TimeoutError, OSError):
-        raise LLMError("Could not reach the LLM API (network problem or timeout).") from None
-    try:
-        content = json.loads(raw)["choices"][0]["message"]["content"]
-    except (ValueError, KeyError, IndexError, TypeError):
-        raise LLMError("The LLM API response had an unexpected format.") from None
-    if not isinstance(content, str):
-        raise LLMError("The LLM API response had no text content.")
-    return content
+    return checks.get(incident_type, False)
 
 
+def _fallback_summary(clean, incident_type):
+    system = clean["system_id"] or "an unnamed system"
+    severity = (f" (pipeline severity: {clean['severity']})"
+                if clean["severity"] != "UNKNOWN" else "")
+    if incident_type == "no_clear_anomaly":
+        body = f"The detector reported no deviated metric for {system}{severity}."
+    elif incident_type == "unknown_anomaly":
+        body = (f"An event was reported for {system}{severity}, but the data does not say "
+                "which metrics deviated, so the cause cannot be identified.")
+    else:
+        parts = list(clean["deviated_metrics"])
+        if clean["memory_trend_detected"] and "memory_pct" not in parts:
+            parts.append("memory_pct")
+        body = (f"On {system}{severity} these metrics deviated: {', '.join(parts)}. "
+                f"This is consistent with {TYPE_DESCRIPTIONS[incident_type]}, but the "
+                "available data cannot confirm the cause.")
+    return FALLBACK_LABEL + " " + body
+
+
+# ------------------------------------------------------------- LLM output
 def _parse_llm_json(text):
-    """Pull one JSON object out of the reply (tolerates ```json fences)."""
+    """Pull one JSON object out of the LLM reply (tolerates ```json fences)."""
+    if not isinstance(text, str):
+        raise LLMError("The LLM reply was not text.")
     text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text.strip())
     start, end = text.find("{"), text.rfind("}")
     if start == -1 or end <= start:
@@ -261,13 +256,15 @@ def _parse_llm_json(text):
         raise LLMError("The LLM output was not valid JSON.") from None
 
 
-def _validate_llm_output(parsed):
-    """Check keys, types, lengths and wording. Returns (incident_type, summary, actions)."""
+def _validate_llm_output(parsed, clean):
+    """Check keys, types, lengths, wording and consistency. Returns (type, summary, actions)."""
     if not isinstance(parsed, dict):
         raise LLMError("The LLM output was not a JSON object.")
     incident_type = parsed.get("incident_type")
     if not isinstance(incident_type, str) or incident_type not in ALLOWED_INCIDENT_TYPES:
         raise LLMError("The LLM gave an unknown incident_type.")
+    if not _supported_by_evidence(incident_type, clean):
+        raise LLMError("The LLM incident_type is not supported by the event data.")
     summary = parsed.get("summary")
     if not isinstance(summary, str) or not (1 <= len(summary.strip()) <= MAX_SUMMARY_LEN):
         raise LLMError("The LLM summary is missing or has an invalid length.")
@@ -279,78 +276,103 @@ def _validate_llm_output(parsed):
         if not isinstance(action, str) or not (1 <= len(action.strip()) <= MAX_ACTION_LEN):
             raise LLMError("An LLM recommended action is not a valid string.")
         cleaned.append(action.strip())
-    everything = (summary + " " + " ".join(cleaned)).lower()
-    if any(word in everything for word in OVERCONFIDENT_WORDS):
+    text = summary + " " + " ".join(cleaned)
+    if any(word in text.lower() for word in OVERCONFIDENT_WORDS):
         raise LLMError("The LLM used over-confident wording.")
+    if IPV4_PATTERN.search(text):
+        raise LLMError("The LLM mentioned an IP address, which was not in the event data.")
     return incident_type, summary.strip(), cleaned
 
 
-# ---------------------------------------------------------------- public function
-def _build_result(status, llm_used, source, incident_type, severity, summary,
-                  evidence, actions, warnings, error, event_id=None):
-    """Every result has exactly these keys, so Part 5 can rely on them."""
+# ---------------------------------------------------------- public function
+def _result(status, source, provider=None, event_id=None, system_id=None, timestamp=None,
+            incident_type="unknown", severity="UNKNOWN", summary="", evidence=None,
+            actions=None, warnings=None, error=None):
+    """Every result has exactly these keys, so Parts 5 and 6 can rely on them."""
     return {
-        "event_id": event_id,                # copied from the input, or None
-        "status": status,                    # "ok" | "fallback" | "error"
-        "llm_used": llm_used,                # True only if a real LLM answer was used
-        "source": source,                    # "llm" | "rule_based_fallback" | "none"
-        "incident_type": incident_type,      # one of ALLOWED_INCIDENT_TYPES, or "unknown"
-        "severity": severity,                # copied from the event, or "unknown"
+        "event_id": event_id,                  # copied from the input, or None
+        "system_id": system_id,                # copied from the input, or None
+        "timestamp": timestamp,                # copied from the input, or None
+        "status": status,                      # "ok" | "fallback" | "error"
+        "source": source,                      # "llm" | "fallback" | "none"
+        "llm_used": source == "llm",           # True only for real LLM text
+        "provider": provider,                  # provider name, or None
+        "incident_type": incident_type,        # one of ALLOWED_INCIDENT_TYPES, or "unknown"
+        "severity": severity,                  # copied from Part 3, or "UNKNOWN"
         "summary": summary,
-        "evidence": evidence,                # list of strings built from the input only
-        "recommended_actions": actions,      # advice for humans; never executed
-        "warnings": warnings,                # list of strings
-        "error": error,                      # None, or a message when status == "error"
-        "advisory_only": True,
+        "evidence": evidence if evidence is not None else [],
+        "recommended_actions": actions if actions is not None else [],
+        "warnings": warnings if warnings is not None else [],
+        "error": error,                        # None, or a message when status is "error"
+        "advisory_only": True,                 # nothing here is ever executed automatically
     }
 
 
-def _error_result(message):
-    return _build_result(
-        "error", False, "none", "unknown", "UNKNOWN",
-        "No explanation was generated because the input event could not be used.", [],
-        ["Check the event produced by the previous module and send it again."], [], message)
+def _error_result(message, event):
+    event_id = None
+    if isinstance(event, dict) and isinstance(event.get("event_id"), str):
+        event_id = _clean_text(event["event_id"]) or None
+    return _result(
+        "error", "none", event_id=event_id,
+        summary="No explanation was generated because the input event could not be used.",
+        actions=["Check the event produced by the earlier pipeline stages and send it again."],
+        error=message)
 
 
-def explain_incident(event):
-    """Explain one detector-flagged event. Never raises for bad input; see status field."""
+def explain_incident(event, llm=None):
+    """Explain one event from the pipeline. Never raises for bad input.
+
+    event: dict returned by pipeline.orchestrator.process_event.
+    llm:   optional function (system_prompt, user_prompt) -> reply text. Used for tests
+           or custom providers. If None, a provider is chosen from the environment;
+           if none is configured, the template-based fallback is used.
+    """
     try:
         clean, warnings = validate_event(event)
     except InvalidEventError as err:
-        return _error_result(str(err))
-    except Exception as err:                       # safety net: report, do not crash
-        return _error_result(f"Unexpected error while checking the event: {type(err).__name__}")
+        return _error_result(str(err), event)
+    except Exception as err:                       # safety net: report it, do not crash
+        return _error_result(f"Unexpected error while checking the event: {type(err).__name__}",
+                             event)
 
-    deviated = find_deviated_metrics(clean)
-    evidence = build_evidence(clean, deviated)
+    evidence = build_evidence(clean)
+    ids = {"event_id": clean["event_id"], "system_id": clean["system_id"],
+           "timestamp": clean["timestamp"], "severity": clean["severity"],
+           "evidence": evidence}
 
-    config, config_warning = _load_config()
-    if config_warning:
-        warnings.append(config_warning)
-    if config is not None:
+    provider_name = "custom" if llm is not None else None
+    if llm is None:
+        llm, provider_name, provider_warning = providers.load_provider()
+        if provider_warning:
+            warnings.append(provider_warning)
+
+    if llm is not None:
         try:
-            reply = _call_llm(config, SYSTEM_PROMPT, build_user_prompt(clean))
-            incident_type, summary, actions = _validate_llm_output(_parse_llm_json(reply))
-            return _build_result("ok", True, "llm", incident_type, clean["severity"],
-                                 summary, evidence, actions, warnings, None,
-                                 event_id=clean["event_id"])
-        except LLMError as err:
-            warnings.append(f"LLM explanation failed: {err} Using the rule-based fallback.")
+            reply = llm(SYSTEM_PROMPT, build_user_prompt(clean))
+            incident_type, summary, actions = _validate_llm_output(_parse_llm_json(reply), clean)
+            return _result("ok", "llm", provider=provider_name, incident_type=incident_type,
+                           summary=summary, actions=actions, warnings=warnings, **ids)
+        except Exception as err:
+            reason = str(err) if isinstance(err, LLMError) else type(err).__name__
+            warnings.append(f"LLM explanation failed ({reason}). "
+                            "The template-based fallback was used.")
 
-    incident_type = classify_incident(clean, deviated)
-    return _build_result("fallback", False, "rule_based_fallback", incident_type,
-                         clean["severity"], _fallback_summary(clean, incident_type, deviated),
-                         evidence, list(FALLBACK_ACTIONS[incident_type]), warnings, None,
-                         event_id=clean["event_id"])
+    incident_type = classify_incident(clean)
+    return _result("fallback", "fallback", incident_type=incident_type,
+                   summary=_fallback_summary(clean, incident_type),
+                   actions=list(FALLBACK_ACTIONS[incident_type]), warnings=warnings, **ids)
+
 
 if __name__ == "__main__":
-    # Demo with a MADE-UP event (not from your repo data). Works with no API key.
+    # Demo with a MADE-UP event (not from your data). Works with no API key.
     demo = {
-        "system_id": "demo-server-1", "timestamp": "2026-10-09T10:00:00Z",
-        "severity": "critical", "anomaly_score": 7.5, "is_anomaly": True,
-        "metrics": {"cpu_pct": 35, "memory_pct": 52, "network_in_mbps": 20,
-                    "network_out_mbps": 15, "failed_logins": 85, "error_rate": 0.01},
-        "metric_scores": {"cpu_pct": 0.2, "memory_pct": 0.1, "network_in_mbps": 0.3,
-                          "network_out_mbps": 0.2, "failed_logins": 7.5, "error_rate": 0.1},
+        "event_id": "demo-1", "system_id": "demo-server", "timestamp": "2026-10-17T10:00:00Z",
+        "severity": "CRITICAL", "is_anomaly": True, "anomaly_score": 40.0,
+        "deviated_metrics": ["failed_logins", "cpu_pct"], "correlation_detected": True,
+        "memory_trend_detected": False,
+        "metrics": {"cpu_pct": 95, "memory_pct": 52, "network_in_mbps": 20,
+                    "network_out_mbps": 15, "failed_logins": 40, "error_rate": 0.01},
+        "metric_scores": {"cpu_pct": 30.0, "memory_pct": 0.3, "network_in_mbps": 0.2,
+                          "network_out_mbps": 0.2, "failed_logins": 40.0, "error_rate": 0.1},
     }
     print(json.dumps(explain_incident(demo), indent=2))
