@@ -1,0 +1,43 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    environment:
+      SENTINEL_DB_PATH: /data/sentinel-encrypted.db
+      SENTINEL_DB_KEY: ${SENTINEL_DB_KEY:?SENTINEL_DB_KEY must be set in .env}
+      SENTINEL_LLM_API_KEY: ${SENTINEL_LLM_API_KEY:-}
+      SENTINEL_LLM_BASE_URL: ${SENTINEL_LLM_BASE_URL:-}
+      SENTINEL_LLM_MODEL: ${SENTINEL_LLM_MODEL:-}
+      SENTINEL_LLM_TIMEOUT: ${SENTINEL_LLM_TIMEOUT:-20}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - "${SENTINEL_DATA_DIR:-../sentinel-data}:/data"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  simulator:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    command: ["python", "-m", "backend.simulate"]
+    environment:
+      SENTINEL_API_URL: http://api:8000
+      SIMULATED_SYSTEMS: ${SIMULATED_SYSTEMS:-2}
+      SIMULATION_INTERVAL_SECONDS: ${SIMULATION_INTERVAL_SECONDS:-1}
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped

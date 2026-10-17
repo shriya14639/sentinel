@@ -1,0 +1,1352 @@
+[
+  {
+    "event_id": "evt_000001",
+    "timestamp": "2026-10-07T09:00:00Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 35.89,
+      "memory_pct": 55.14,
+      "network_in_mbps": 114.58,
+      "network_out_mbps": 86.65,
+      "failed_logins": 2,
+      "error_rate": 0.79
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000002",
+    "timestamp": "2026-10-07T09:00:00Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 36.07,
+      "memory_pct": 59.18,
+      "network_in_mbps": 101.84,
+      "network_out_mbps": 60.78,
+      "failed_logins": 0,
+      "error_rate": 0.61
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000003",
+    "timestamp": "2026-10-07T09:00:00Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 41.35,
+      "memory_pct": 60.82,
+      "network_in_mbps": 100.31,
+      "network_out_mbps": 56.85,
+      "failed_logins": 1,
+      "error_rate": 1.27
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000004",
+    "timestamp": "2026-10-07T09:00:10Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 37.27,
+      "memory_pct": 55.33,
+      "network_in_mbps": 124.32,
+      "network_out_mbps": 84.33,
+      "failed_logins": 0,
+      "error_rate": 0.83
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000005",
+    "timestamp": "2026-10-07T09:00:10Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 35.81,
+      "memory_pct": 59.49,
+      "network_in_mbps": 66.55,
+      "network_out_mbps": 61.93,
+      "failed_logins": 0,
+      "error_rate": 0.67
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000006",
+    "timestamp": "2026-10-07T09:00:10Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 43.04,
+      "memory_pct": 60.06,
+      "network_in_mbps": 119.06,
+      "network_out_mbps": 50.43,
+      "failed_logins": 1,
+      "error_rate": 1.29
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000007",
+    "timestamp": "2026-10-07T09:00:20Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 39.77,
+      "memory_pct": 55.18,
+      "network_in_mbps": 118.26,
+      "network_out_mbps": 84.73,
+      "failed_logins": 0,
+      "error_rate": 0.36
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000008",
+    "timestamp": "2026-10-07T09:00:20Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 31.21,
+      "memory_pct": 59.1,
+      "network_in_mbps": 83.25,
+      "network_out_mbps": 70.49,
+      "failed_logins": 1,
+      "error_rate": 0.99
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000009",
+    "timestamp": "2026-10-07T09:00:20Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 39.1,
+      "memory_pct": 60.26,
+      "network_in_mbps": 106.39,
+      "network_out_mbps": 61.27,
+      "failed_logins": 1,
+      "error_rate": 1.03
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000010",
+    "timestamp": "2026-10-07T09:00:30Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 38.77,
+      "memory_pct": 56.07,
+      "network_in_mbps": 130.29,
+      "network_out_mbps": 77.57,
+      "failed_logins": 0,
+      "error_rate": 0.66
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000011",
+    "timestamp": "2026-10-07T09:00:30Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 29.34,
+      "memory_pct": 56.88,
+      "network_in_mbps": 72.57,
+      "network_out_mbps": 68.64,
+      "failed_logins": 1,
+      "error_rate": 1.17
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000012",
+    "timestamp": "2026-10-07T09:00:30Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 40.44,
+      "memory_pct": 59.96,
+      "network_in_mbps": 108.6,
+      "network_out_mbps": 57.14,
+      "failed_logins": 1,
+      "error_rate": 0.72
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000013",
+    "timestamp": "2026-10-07T09:00:40Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 38.04,
+      "memory_pct": 55.25,
+      "network_in_mbps": 109.92,
+      "network_out_mbps": 79.44,
+      "failed_logins": 1,
+      "error_rate": 0.7
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000014",
+    "timestamp": "2026-10-07T09:00:40Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 34.42,
+      "memory_pct": 57.78,
+      "network_in_mbps": 85.07,
+      "network_out_mbps": 67.69,
+      "failed_logins": 0,
+      "error_rate": 1.06
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000015",
+    "timestamp": "2026-10-07T09:00:40Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 43.54,
+      "memory_pct": 59.9,
+      "network_in_mbps": 104.86,
+      "network_out_mbps": 57.74,
+      "failed_logins": 1,
+      "error_rate": 1.32
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000016",
+    "timestamp": "2026-10-07T09:00:50Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 31.46,
+      "memory_pct": 54.85,
+      "network_in_mbps": 128.26,
+      "network_out_mbps": 86.06,
+      "failed_logins": 0,
+      "error_rate": 1.43
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000017",
+    "timestamp": "2026-10-07T09:00:50Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 31.66,
+      "memory_pct": 56.9,
+      "network_in_mbps": 86.69,
+      "network_out_mbps": 59.92,
+      "failed_logins": 1,
+      "error_rate": 0.83
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000018",
+    "timestamp": "2026-10-07T09:00:50Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 38.51,
+      "memory_pct": 61.33,
+      "network_in_mbps": 101.49,
+      "network_out_mbps": 52.14,
+      "failed_logins": 1,
+      "error_rate": 1.24
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000019",
+    "timestamp": "2026-10-07T09:01:00Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 38.11,
+      "memory_pct": 57.47,
+      "network_in_mbps": 120.87,
+      "network_out_mbps": 70.37,
+      "failed_logins": 0,
+      "error_rate": 0.53
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000020",
+    "timestamp": "2026-10-07T09:01:00Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 32.58,
+      "memory_pct": 60.61,
+      "network_in_mbps": 75.73,
+      "network_out_mbps": 74.37,
+      "failed_logins": 0,
+      "error_rate": 0.84
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000021",
+    "timestamp": "2026-10-07T09:01:00Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 35.45,
+      "memory_pct": 61.99,
+      "network_in_mbps": 107.86,
+      "network_out_mbps": 56.11,
+      "failed_logins": 5,
+      "error_rate": 1.51
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000022",
+    "timestamp": "2026-10-07T09:01:10Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 36.19,
+      "memory_pct": 57.73,
+      "network_in_mbps": 130.88,
+      "network_out_mbps": 92.62,
+      "failed_logins": 0,
+      "error_rate": 0.42
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000023",
+    "timestamp": "2026-10-07T09:01:10Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 42.72,
+      "memory_pct": 61.17,
+      "network_in_mbps": 83.71,
+      "network_out_mbps": 64.35,
+      "failed_logins": 2,
+      "error_rate": 0.66
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000024",
+    "timestamp": "2026-10-07T09:01:10Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 36.67,
+      "memory_pct": 61.79,
+      "network_in_mbps": 111.31,
+      "network_out_mbps": 68.97,
+      "failed_logins": 0,
+      "error_rate": 1.21
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000025",
+    "timestamp": "2026-10-07T09:01:20Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 29.87,
+      "memory_pct": 56.84,
+      "network_in_mbps": 118.88,
+      "network_out_mbps": 71.07,
+      "failed_logins": 0,
+      "error_rate": 0.65
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000026",
+    "timestamp": "2026-10-07T09:01:20Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 45.93,
+      "memory_pct": 59.84,
+      "network_in_mbps": 139.16,
+      "network_out_mbps": 65.29,
+      "failed_logins": 35,
+      "error_rate": 2.05
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "brute_force"
+  },
+  {
+    "event_id": "evt_000027",
+    "timestamp": "2026-10-07T09:01:20Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 39.12,
+      "memory_pct": 60.84,
+      "network_in_mbps": 114.35,
+      "network_out_mbps": 68.43,
+      "failed_logins": 3,
+      "error_rate": 0.83
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000028",
+    "timestamp": "2026-10-07T09:01:30Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 39.57,
+      "memory_pct": 57.98,
+      "network_in_mbps": 120.74,
+      "network_out_mbps": 76.06,
+      "failed_logins": 0,
+      "error_rate": 0.7
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000029",
+    "timestamp": "2026-10-07T09:01:30Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 48.87,
+      "memory_pct": 58.71,
+      "network_in_mbps": 138.44,
+      "network_out_mbps": 54.35,
+      "failed_logins": 58,
+      "error_rate": 3.25
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "brute_force"
+  },
+  {
+    "event_id": "evt_000030",
+    "timestamp": "2026-10-07T09:01:30Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 33.89,
+      "memory_pct": 62.47,
+      "network_in_mbps": 117.35,
+      "network_out_mbps": 80.76,
+      "failed_logins": 0,
+      "error_rate": 1.14
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000031",
+    "timestamp": "2026-10-07T09:01:40Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 40.28,
+      "memory_pct": 56.7,
+      "network_in_mbps": 127.39,
+      "network_out_mbps": 70.76,
+      "failed_logins": 0,
+      "error_rate": 0.69
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000032",
+    "timestamp": "2026-10-07T09:01:40Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 55.16,
+      "memory_pct": 60.22,
+      "network_in_mbps": 129.18,
+      "network_out_mbps": 70.16,
+      "failed_logins": 50,
+      "error_rate": 2.11
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "brute_force"
+  },
+  {
+    "event_id": "evt_000033",
+    "timestamp": "2026-10-07T09:01:40Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 47.1,
+      "memory_pct": 65.28,
+      "network_in_mbps": 118.24,
+      "network_out_mbps": 61.12,
+      "failed_logins": 0,
+      "error_rate": 1.27
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000034",
+    "timestamp": "2026-10-07T09:01:50Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 43.53,
+      "memory_pct": 57.07,
+      "network_in_mbps": 134.21,
+      "network_out_mbps": 68.26,
+      "failed_logins": 4,
+      "error_rate": 0.77
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000035",
+    "timestamp": "2026-10-07T09:01:50Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 55.1,
+      "memory_pct": 59.51,
+      "network_in_mbps": 128.02,
+      "network_out_mbps": 81.18,
+      "failed_logins": 55,
+      "error_rate": 2.01
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "brute_force"
+  },
+  {
+    "event_id": "evt_000036",
+    "timestamp": "2026-10-07T09:01:50Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 40.18,
+      "memory_pct": 64.89,
+      "network_in_mbps": 99.46,
+      "network_out_mbps": 74.42,
+      "failed_logins": 0,
+      "error_rate": 1.2
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000037",
+    "timestamp": "2026-10-07T09:02:00Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 97.33,
+      "memory_pct": 57.86,
+      "network_in_mbps": 135.91,
+      "network_out_mbps": 96.52,
+      "failed_logins": 0,
+      "error_rate": 0.88
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "cpu_spike"
+  },
+  {
+    "event_id": "evt_000038",
+    "timestamp": "2026-10-07T09:02:00Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 53.99,
+      "memory_pct": 59.69,
+      "network_in_mbps": 138.33,
+      "network_out_mbps": 64.32,
+      "failed_logins": 42,
+      "error_rate": 2.23
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "brute_force"
+  },
+  {
+    "event_id": "evt_000039",
+    "timestamp": "2026-10-07T09:02:00Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 41.92,
+      "memory_pct": 62.14,
+      "network_in_mbps": 114.52,
+      "network_out_mbps": 58.39,
+      "failed_logins": 1,
+      "error_rate": 1.38
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000040",
+    "timestamp": "2026-10-07T09:02:10Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 94.3,
+      "memory_pct": 56.46,
+      "network_in_mbps": 118.56,
+      "network_out_mbps": 77.73,
+      "failed_logins": 1,
+      "error_rate": 1.07
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "cpu_spike"
+  },
+  {
+    "event_id": "evt_000041",
+    "timestamp": "2026-10-07T09:02:10Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 51.7,
+      "memory_pct": 59.46,
+      "network_in_mbps": 143.84,
+      "network_out_mbps": 83.32,
+      "failed_logins": 55,
+      "error_rate": 1.97
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "brute_force"
+  },
+  {
+    "event_id": "evt_000042",
+    "timestamp": "2026-10-07T09:02:10Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 42.37,
+      "memory_pct": 64.6,
+      "network_in_mbps": 117.87,
+      "network_out_mbps": 69.88,
+      "failed_logins": 0,
+      "error_rate": 1.01
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000043",
+    "timestamp": "2026-10-07T09:02:20Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 94.08,
+      "memory_pct": 56.84,
+      "network_in_mbps": 141.36,
+      "network_out_mbps": 75.05,
+      "failed_logins": 0,
+      "error_rate": 1.16
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "cpu_spike"
+  },
+  {
+    "event_id": "evt_000044",
+    "timestamp": "2026-10-07T09:02:20Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 38.66,
+      "memory_pct": 60.1,
+      "network_in_mbps": 90.81,
+      "network_out_mbps": 81.51,
+      "failed_logins": 2,
+      "error_rate": 1.54
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000045",
+    "timestamp": "2026-10-07T09:02:20Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 31.21,
+      "memory_pct": 65.06,
+      "network_in_mbps": 111.29,
+      "network_out_mbps": 69.08,
+      "failed_logins": 0,
+      "error_rate": 0.83
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000046",
+    "timestamp": "2026-10-07T09:02:30Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 97.67,
+      "memory_pct": 55.37,
+      "network_in_mbps": 136.37,
+      "network_out_mbps": 88.11,
+      "failed_logins": 1,
+      "error_rate": 0.22
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "cpu_spike"
+  },
+  {
+    "event_id": "evt_000047",
+    "timestamp": "2026-10-07T09:02:30Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 39.92,
+      "memory_pct": 59.93,
+      "network_in_mbps": 92.79,
+      "network_out_mbps": 77.43,
+      "failed_logins": 1,
+      "error_rate": 0.79
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000048",
+    "timestamp": "2026-10-07T09:02:30Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 40.11,
+      "memory_pct": 64.21,
+      "network_in_mbps": 112.22,
+      "network_out_mbps": 72.58,
+      "failed_logins": 0,
+      "error_rate": 1.2
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000049",
+    "timestamp": "2026-10-07T09:02:40Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 31.85,
+      "memory_pct": 55.2,
+      "network_in_mbps": 117.73,
+      "network_out_mbps": 65.64,
+      "failed_logins": 0,
+      "error_rate": 0.99
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000050",
+    "timestamp": "2026-10-07T09:02:40Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 39.11,
+      "memory_pct": 60.36,
+      "network_in_mbps": 105.38,
+      "network_out_mbps": 71.26,
+      "failed_logins": 0,
+      "error_rate": 0.95
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000051",
+    "timestamp": "2026-10-07T09:02:40Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 39.77,
+      "memory_pct": 62.94,
+      "network_in_mbps": 110.47,
+      "network_out_mbps": 56.74,
+      "failed_logins": 0,
+      "error_rate": 1.14
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000052",
+    "timestamp": "2026-10-07T09:02:50Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 46.89,
+      "memory_pct": 55.43,
+      "network_in_mbps": 137.05,
+      "network_out_mbps": 76.36,
+      "failed_logins": 0,
+      "error_rate": 0.78
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000053",
+    "timestamp": "2026-10-07T09:02:50Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 42.26,
+      "memory_pct": 58.23,
+      "network_in_mbps": 87.45,
+      "network_out_mbps": 63.72,
+      "failed_logins": 0,
+      "error_rate": 1.09
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000054",
+    "timestamp": "2026-10-07T09:02:50Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 40.79,
+      "memory_pct": 64.05,
+      "network_in_mbps": 129.83,
+      "network_out_mbps": 65.99,
+      "failed_logins": 1,
+      "error_rate": 1.15
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000055",
+    "timestamp": "2026-10-07T09:03:00Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 41.72,
+      "memory_pct": 57.09,
+      "network_in_mbps": 137.14,
+      "network_out_mbps": 100.65,
+      "failed_logins": 0,
+      "error_rate": 0.84
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000056",
+    "timestamp": "2026-10-07T09:03:00Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 43.07,
+      "memory_pct": 58.17,
+      "network_in_mbps": 96.79,
+      "network_out_mbps": 72.51,
+      "failed_logins": 0,
+      "error_rate": 0.78
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000057",
+    "timestamp": "2026-10-07T09:03:00Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 88.59,
+      "memory_pct": 85.72,
+      "network_in_mbps": 302.42,
+      "network_out_mbps": 185.38,
+      "failed_logins": 4,
+      "error_rate": 8.78
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "resource_exhaustion"
+  },
+  {
+    "event_id": "evt_000058",
+    "timestamp": "2026-10-07T09:03:10Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 41.25,
+      "memory_pct": 59.48,
+      "network_in_mbps": 135.08,
+      "network_out_mbps": 90.03,
+      "failed_logins": 1,
+      "error_rate": 0.63
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000059",
+    "timestamp": "2026-10-07T09:03:10Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 35.58,
+      "memory_pct": 59.94,
+      "network_in_mbps": 104.97,
+      "network_out_mbps": 76.09,
+      "failed_logins": 0,
+      "error_rate": 1.11
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000060",
+    "timestamp": "2026-10-07T09:03:10Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 89.01,
+      "memory_pct": 80.43,
+      "network_in_mbps": 270.09,
+      "network_out_mbps": 190.52,
+      "failed_logins": 4,
+      "error_rate": 10.44
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "resource_exhaustion"
+  },
+  {
+    "event_id": "evt_000061",
+    "timestamp": "2026-10-07T09:03:20Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 40.17,
+      "memory_pct": 58.9,
+      "network_in_mbps": 138.1,
+      "network_out_mbps": 91.05,
+      "failed_logins": 0,
+      "error_rate": 1.06
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000062",
+    "timestamp": "2026-10-07T09:03:20Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 35.32,
+      "memory_pct": 59.0,
+      "network_in_mbps": 108.11,
+      "network_out_mbps": 72.05,
+      "failed_logins": 0,
+      "error_rate": 0.9
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000063",
+    "timestamp": "2026-10-07T09:03:20Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 80.67,
+      "memory_pct": 84.07,
+      "network_in_mbps": 281.92,
+      "network_out_mbps": 175.54,
+      "failed_logins": 1,
+      "error_rate": 8.06
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "resource_exhaustion"
+  },
+  {
+    "event_id": "evt_000064",
+    "timestamp": "2026-10-07T09:03:30Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 37.36,
+      "memory_pct": 57.87,
+      "network_in_mbps": 133.31,
+      "network_out_mbps": 83.98,
+      "failed_logins": 1,
+      "error_rate": 0.59
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000065",
+    "timestamp": "2026-10-07T09:03:30Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 42.05,
+      "memory_pct": 60.58,
+      "network_in_mbps": 100.93,
+      "network_out_mbps": 76.36,
+      "failed_logins": 1,
+      "error_rate": 0.94
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000066",
+    "timestamp": "2026-10-07T09:03:30Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 82.87,
+      "memory_pct": 80.22,
+      "network_in_mbps": 320.99,
+      "network_out_mbps": 175.39,
+      "failed_logins": 1,
+      "error_rate": 7.01
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "resource_exhaustion"
+  },
+  {
+    "event_id": "evt_000067",
+    "timestamp": "2026-10-07T09:03:40Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 37.21,
+      "memory_pct": 63.72,
+      "network_in_mbps": 120.98,
+      "network_out_mbps": 96.98,
+      "failed_logins": 0,
+      "error_rate": 0.78
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "memory_leak"
+  },
+  {
+    "event_id": "evt_000068",
+    "timestamp": "2026-10-07T09:03:40Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 34.97,
+      "memory_pct": 59.27,
+      "network_in_mbps": 85.23,
+      "network_out_mbps": 80.09,
+      "failed_logins": 1,
+      "error_rate": 0.81
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000069",
+    "timestamp": "2026-10-07T09:03:40Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 80.61,
+      "memory_pct": 87.8,
+      "network_in_mbps": 288.63,
+      "network_out_mbps": 222.79,
+      "failed_logins": 3,
+      "error_rate": 7.16
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "resource_exhaustion"
+  },
+  {
+    "event_id": "evt_000070",
+    "timestamp": "2026-10-07T09:03:50Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 38.39,
+      "memory_pct": 67.94,
+      "network_in_mbps": 143.55,
+      "network_out_mbps": 90.14,
+      "failed_logins": 0,
+      "error_rate": 0.98
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "memory_leak"
+  },
+  {
+    "event_id": "evt_000071",
+    "timestamp": "2026-10-07T09:03:50Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 34.09,
+      "memory_pct": 60.19,
+      "network_in_mbps": 88.45,
+      "network_out_mbps": 64.5,
+      "failed_logins": 1,
+      "error_rate": 0.88
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000072",
+    "timestamp": "2026-10-07T09:03:50Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 37.89,
+      "memory_pct": 63.67,
+      "network_in_mbps": 119.85,
+      "network_out_mbps": 64.13,
+      "failed_logins": 0,
+      "error_rate": 1.11
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000073",
+    "timestamp": "2026-10-07T09:04:00Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 46.51,
+      "memory_pct": 72.42,
+      "network_in_mbps": 112.15,
+      "network_out_mbps": 99.68,
+      "failed_logins": 1,
+      "error_rate": 0.37
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "memory_leak"
+  },
+  {
+    "event_id": "evt_000074",
+    "timestamp": "2026-10-07T09:04:00Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 39.21,
+      "memory_pct": 58.65,
+      "network_in_mbps": 102.86,
+      "network_out_mbps": 79.31,
+      "failed_logins": 3,
+      "error_rate": 0.95
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000075",
+    "timestamp": "2026-10-07T09:04:00Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 42.1,
+      "memory_pct": 61.81,
+      "network_in_mbps": 118.77,
+      "network_out_mbps": 65.93,
+      "failed_logins": 1,
+      "error_rate": 1.66
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000076",
+    "timestamp": "2026-10-07T09:04:10Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 43.52,
+      "memory_pct": 77.52,
+      "network_in_mbps": 127.91,
+      "network_out_mbps": 88.43,
+      "failed_logins": 0,
+      "error_rate": 0.78
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "memory_leak"
+  },
+  {
+    "event_id": "evt_000077",
+    "timestamp": "2026-10-07T09:04:10Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 36.53,
+      "memory_pct": 59.52,
+      "network_in_mbps": 96.76,
+      "network_out_mbps": 61.82,
+      "failed_logins": 0,
+      "error_rate": 1.17
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000078",
+    "timestamp": "2026-10-07T09:04:10Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 29.36,
+      "memory_pct": 64.11,
+      "network_in_mbps": 119.77,
+      "network_out_mbps": 63.29,
+      "failed_logins": 0,
+      "error_rate": 1.45
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000079",
+    "timestamp": "2026-10-07T09:04:20Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 50.79,
+      "memory_pct": 86.14,
+      "network_in_mbps": 140.77,
+      "network_out_mbps": 85.87,
+      "failed_logins": 0,
+      "error_rate": 1.02
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "memory_leak"
+  },
+  {
+    "event_id": "evt_000080",
+    "timestamp": "2026-10-07T09:04:20Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 38.56,
+      "memory_pct": 59.32,
+      "network_in_mbps": 105.97,
+      "network_out_mbps": 87.77,
+      "failed_logins": 2,
+      "error_rate": 0.99
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000081",
+    "timestamp": "2026-10-07T09:04:20Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 30.57,
+      "memory_pct": 62.72,
+      "network_in_mbps": 109.1,
+      "network_out_mbps": 50.36,
+      "failed_logins": 0,
+      "error_rate": 1.01
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000082",
+    "timestamp": "2026-10-07T09:04:30Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 45.8,
+      "memory_pct": 88.71,
+      "network_in_mbps": 126.84,
+      "network_out_mbps": 86.92,
+      "failed_logins": 0,
+      "error_rate": 0.62
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "memory_leak"
+  },
+  {
+    "event_id": "evt_000083",
+    "timestamp": "2026-10-07T09:04:30Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 39.57,
+      "memory_pct": 60.71,
+      "network_in_mbps": 98.38,
+      "network_out_mbps": 81.7,
+      "failed_logins": 1,
+      "error_rate": 1.01
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000084",
+    "timestamp": "2026-10-07T09:04:30Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 33.27,
+      "memory_pct": 63.8,
+      "network_in_mbps": 113.27,
+      "network_out_mbps": 60.65,
+      "failed_logins": 0,
+      "error_rate": 1.52
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000085",
+    "timestamp": "2026-10-07T09:04:40Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 35.44,
+      "memory_pct": 94.16,
+      "network_in_mbps": 151.98,
+      "network_out_mbps": 89.78,
+      "failed_logins": 1,
+      "error_rate": 0.59
+    },
+    "injected_anomaly": true,
+    "anomaly_type": "memory_leak"
+  },
+  {
+    "event_id": "evt_000086",
+    "timestamp": "2026-10-07T09:04:40Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 42.79,
+      "memory_pct": 59.98,
+      "network_in_mbps": 101.73,
+      "network_out_mbps": 77.64,
+      "failed_logins": 0,
+      "error_rate": 1.27
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000087",
+    "timestamp": "2026-10-07T09:04:40Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 30.47,
+      "memory_pct": 63.57,
+      "network_in_mbps": 128.46,
+      "network_out_mbps": 60.53,
+      "failed_logins": 1,
+      "error_rate": 1.47
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000088",
+    "timestamp": "2026-10-07T09:04:50Z",
+    "system_id": "server-1",
+    "metrics": {
+      "cpu_pct": 43.55,
+      "memory_pct": 56.84,
+      "network_in_mbps": 128.62,
+      "network_out_mbps": 87.74,
+      "failed_logins": 1,
+      "error_rate": 1.38
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000089",
+    "timestamp": "2026-10-07T09:04:50Z",
+    "system_id": "server-2",
+    "metrics": {
+      "cpu_pct": 45.27,
+      "memory_pct": 59.86,
+      "network_in_mbps": 107.89,
+      "network_out_mbps": 81.76,
+      "failed_logins": 1,
+      "error_rate": 1.23
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  },
+  {
+    "event_id": "evt_000090",
+    "timestamp": "2026-10-07T09:04:50Z",
+    "system_id": "server-3",
+    "metrics": {
+      "cpu_pct": 41.94,
+      "memory_pct": 63.07,
+      "network_in_mbps": 98.52,
+      "network_out_mbps": 69.22,
+      "failed_logins": 0,
+      "error_rate": 0.91
+    },
+    "injected_anomaly": false,
+    "anomaly_type": null
+  }
+]

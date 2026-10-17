@@ -1,0 +1,56 @@
+{
+  "format_version": 1,
+  "metrics": [
+    "cpu_pct",
+    "memory_pct",
+    "network_in_mbps",
+    "network_out_mbps",
+    "failed_logins",
+    "error_rate"
+  ],
+  "centers": {
+    "cpu_pct": 35.08,
+    "memory_pct": 56.48,
+    "network_in_mbps": 107.595,
+    "network_out_mbps": 64.4,
+    "failed_logins": 1.0,
+    "error_rate": 1.0
+  },
+  "limits": {
+    "cpu_pct": 24.65,
+    "memory_pct": 12.18,
+    "network_in_mbps": 66.045,
+    "network_out_mbps": 55.72999999999999,
+    "failed_logins": 5.0,
+    "error_rate": 1.1600000000000001
+  },
+  "floors": {
+    "cpu_pct": 1.0,
+    "memory_pct": 1.0,
+    "network_in_mbps": 1.0,
+    "network_out_mbps": 1.0,
+    "failed_logins": 1.0,
+    "error_rate": 0.05
+  },
+  "alpha": 0.001,
+  "train_seeds": [
+    101,
+    102,
+    103,
+    104
+  ],
+  "calibration_seeds": [
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210
+  ],
+  "n_train": 40000,
+  "n_calibration": 100000
+}
