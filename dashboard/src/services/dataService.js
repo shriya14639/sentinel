@@ -104,6 +104,59 @@ export const DEMO_INCIDENTS = [
 export async function fetchIncidents(apiBaseUrl = "") {
   if (apiBaseUrl) {
     try {
+<<<<<<< HEAD
+      const response = await fetch(`${apiBaseUrl}/incidents`, {
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP Error ${response.status}: ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+
+      const apiIncidents = Array.isArray(data)
+        ? data
+        : (data.items || data.incidents || []);
+
+      const mappedIncidents = apiIncidents.map((item) => ({
+        event_id: String(item.event_id ?? item.record_id ?? "Unknown"),
+        timestamp: item.timestamp ?? "",
+        system_id: String(item.system_id ?? "Unknown"),
+        status: item.is_anomaly ? "OPEN" : "RESOLVED",
+        severity: String(item.severity ?? "LOW").toUpperCase(),
+summary: (() => {
+  const value = item.explanation ?? item.summary;
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object") {
+    return String(
+      value.message ??
+      value.description ??
+      value.summary ??
+      value.reason ??
+      JSON.stringify(value)
+    );
+  }
+  return "Anomaly monitoring event";
+})(),
+           
+        anomaly_type: String(item.anomaly_type ?? "Telemetry anomaly"),
+        metrics:
+          item.metrics && typeof item.metrics === "object"
+            ? item.metrics
+            : {},
+        evidence: Array.isArray(item.deviated_metrics)
+          ? item.deviated_metrics.map(String)
+          : [],
+        warnings: [],
+        recommended_actions: []
+      }));
+
+      return {
+        data: mappedIncidents,
+=======
       const response = await fetch(`${apiBaseUrl}/api/incidents`, {
         headers: { "Content-Type": "application/json" }
       });
@@ -113,6 +166,7 @@ export async function fetchIncidents(apiBaseUrl = "") {
       const data = await response.json();
       return {
         data: Array.isArray(data) ? data : data.incidents || [],
+>>>>>>> origin/main
         isDemo: false,
         error: null
       };
@@ -123,6 +177,7 @@ export async function fetchIncidents(apiBaseUrl = "") {
         isDemo: true,
         error: `Could not reach backend (${err.message}). Displaying local datathon demo events.`
       };
+      
     }
   }
 
@@ -131,4 +186,11 @@ export async function fetchIncidents(apiBaseUrl = "") {
     isDemo: true,
     error: null
   };
+<<<<<<< HEAD
 }
+
+
+  
+=======
+}
+>>>>>>> origin/main

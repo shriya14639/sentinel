@@ -1,3 +1,19 @@
+
 .DS_Store
+
+# Environment and secrets
+.env
+.venv/
+venv/
+
+# Python cache files
 __pycache__/
 *.py[cod]
+
+# Local databases
+*.db
+*.db-wal
+*.db-shm
+
+# Local application data
+sentinel-data/

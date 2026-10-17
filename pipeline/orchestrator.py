@@ -1,4 +1,5 @@
 
+
 """Orchestrate anomaly detection and severity classification."""
 
 import json
@@ -46,7 +47,9 @@ class MemoryTrendTracker:
             readings[i] > readings[i - 1]
             for i in range(1, len(readings))
         )
-        large_increase = readings[-1] - readings[0] >= MEMORY_TREND_INCREASE
+        large_increase = (
+            readings[-1] - readings[0] >= MEMORY_TREND_INCREASE
+        )
 
         return steadily_increasing and large_increase
 
@@ -59,20 +62,20 @@ def process_event(event, detector, trend_tracker=None):
     result.update(prediction)
     result["metrics"] = event.get("metrics", {})
 
-    if trend_tracker is not None:
-        trend_detected = trend_tracker.check(event)
-    else:
-        trend_detected = False
-
+    trend_detected = (
+        trend_tracker.check(event)
+        if trend_tracker is not None
+        else False
+    )
     result["memory_trend_detected"] = trend_detected
 
-    # A sustained memory increase is an additional anomaly signal.
     if trend_detected:
         result["is_anomaly"] = True
         result["anomaly_score"] = max(
             result.get("anomaly_score", 0),
             6.0,
         )
+
         flagged = list(result.get("flagged_metrics", []))
         if "memory_pct" not in flagged:
             flagged.append("memory_pct")
@@ -86,7 +89,7 @@ def process_event(event, detector, trend_tracker=None):
 
 
 def process_events(events, detector):
-    """Process a collection of events."""
+    """Process a collection of events with memory-trend tracking."""
     tracker = MemoryTrendTracker()
     return [
         process_event(event, detector, tracker)
@@ -109,3 +112,8 @@ def replay_jsonl_stream(file_path, detector):
             if line.strip():
                 event = json.loads(line)
                 yield process_event(event, detector, tracker)
+
+
+def process_replay(replay_events, detector):
+    """Process and return events received from a replay stream."""
+    return list(process_stream(replay_events, detector))

@@ -1,1 +1,1 @@
-# sentinel-ibm-z-datathon2
+# sentinel-ibm-z-datathon
