@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ShieldAlert, 
   Activity, 
@@ -27,7 +27,7 @@ export default function App() {
   const [statusFilter, setStatusFilter] = useState('ALL');
 
   // Backend connection toggle
-  const [backendUrl, setBackendUrl] = useState('');
+  const [backendUrl, setBackendUrl] = useState('http://127.0.0.1:8001');
   const [showConfig, setShowConfig] = useState(false);
 
   const loadData = async (url = backendUrl) => {
@@ -307,7 +307,7 @@ export default function App() {
             <div className="detail-header">
               <div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                  {selectedIncident.event_id} • {new Date(selectedIncident.timestamp).toLocaleTimeString()}
+                  {selectedIncident.event_id} â€¢ {new Date(selectedIncident.timestamp).toLocaleTimeString()}
                 </span>
                 <h3 style={{ fontSize: '1.15rem', marginTop: '0.2rem' }}>
                   {selectedIncident.system_id}

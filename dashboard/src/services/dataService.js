@@ -1,4 +1,4 @@
-// Sentinel IBM Z Incident & Telemetry Service
+﻿// Sentinel IBM Z Incident & Telemetry Service
 // Demo data mirrors data2/sample_events.json telemetry and schema
 
 export const DEMO_INCIDENTS = [
@@ -100,7 +100,7 @@ export const DEMO_INCIDENTS = [
     warnings: []
   }
 ];
-export async function fetchIncidents(apiBaseUrl = "") {
+export async function fetchIncidents(apiBaseUrl = "http://127.0.0.1:8001") {
   if (apiBaseUrl) {
     try {
       const response = await fetch(`${apiBaseUrl}/incidents`, {
@@ -176,4 +176,5 @@ export async function fetchIncidents(apiBaseUrl = "") {
     error: null
   };
 }
+
 

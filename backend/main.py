@@ -18,6 +18,17 @@ from genai_explanation.explain import explain_incident
 from pipeline.orchestrator import create_detector, process_event, MemoryTrendTracker
 from src.anomaly_detection import METRICS
 
+# Initialize the detector using representative normal training events.
+TRAINING_EVENTS = [
+    {"metrics": {"cpu_pct": 30, "memory_pct": 50, "network_in_mbps": 20, "network_out_mbps": 15, "failed_logins": 0, "error_rate": 0.5}},
+    {"metrics": {"cpu_pct": 31, "memory_pct": 51, "network_in_mbps": 21, "network_out_mbps": 16, "failed_logins": 0, "error_rate": 0.6}},
+    {"metrics": {"cpu_pct": 29, "memory_pct": 49, "network_in_mbps": 19, "network_out_mbps": 14, "failed_logins": 1, "error_rate": 0.4}},
+    {"metrics": {"cpu_pct": 30, "memory_pct": 50, "network_in_mbps": 20, "network_out_mbps": 15, "failed_logins": 0, "error_rate": 0.5}},
+]
+
+DETECTOR = create_detector(TRAINING_EVENTS)
+TREND_TRACKER = MemoryTrendTracker()
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
