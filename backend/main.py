@@ -1,4 +1,4 @@
-  """FastAPI service that runs the Sentinel event pipeline and persists results."""
+"""FastAPI service that runs the Sentinel event pipeline and persists results."""  
 from pathlib import Path
 from dotenv import load_dotenv
 
