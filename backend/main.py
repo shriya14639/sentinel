@@ -80,8 +80,9 @@ def create_event(raw_event: dict[str, Any]) -> dict[str, Any]:
     event.pop("injected_anomaly", None)
     event.pop("anomaly_type", None)
 
+    
     try:
-        processed_event = process_event(event)
+        processed_event = process_event(event, DETECTOR, TREND_TRACKER)
     except (InvalidEventError, ValueError) as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
 
