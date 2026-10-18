@@ -1,4 +1,4 @@
-"""FastAPI service that runs the Sentinel event pipeline and persists results."""
+  """FastAPI service that runs the Sentinel event pipeline and persists results."""
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -15,7 +15,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from anomaly_detection.score import InvalidEventError
 from backend.db import init_db, list_incidents, list_metric_history, save_event
 from genai_explanation.explain import explain_incident
-from pipeline.orchestrator import process_event
+from pipeline.orchestrator import create_detector, process_event, MemoryTrendTracker
+from src.anomaly_detection import METRICS
 
 
 @asynccontextmanager
@@ -81,7 +82,7 @@ def create_event(raw_event: dict[str, Any]) -> dict[str, Any]:
 
     try:
         processed_event = process_event(event)
-    except InvalidEventError as error:
+    except (InvalidEventError, ValueError) as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
 
     if processed_event["is_anomaly"]:
